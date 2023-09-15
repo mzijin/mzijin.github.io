@@ -4,6 +4,31 @@
   
     
     <entry>
+      <title>智能BI平台踩坑日记</title>
+      <link href="/post/123b5326.html"/>
+      <url>/post/123b5326.html</url>
+      
+        <content type="html"><![CDATA[<h2 id="上线项目踩坑"><a href="#上线项目踩坑" class="headerlink" title="上线项目踩坑"></a>上线项目踩坑</h2><h2 id="关于作者"><a href="#关于作者" class="headerlink" title="关于作者"></a>关于作者</h2><p>现就读于深圳信息职业技术学院，21级， 大数据专业</p><h2 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h2><p>项目所需要的环境：一台centos7.6以上版本的服务器（我用的是7.6） ，nginx,mysql,redis,jdk,rabbitmq<br>对于nginx mysql redis,jdk的安装有多种方式<br>可以通过yum apt 等包管理器安装<br>可以通过压缩包的方式</p><p>最简单方式：<br>通过宝塔快速安装（傻瓜式操作）<br><img src="/../images/img.png" alt="img.png"><br>怎么样是不是非常简单<br>rabbitmq的安装我推荐：<a href="https://blog.csdn.net/qq_45173404/article/details/116429302">https://blog.csdn.net/qq_45173404/article/details/116429302</a> 多种安装方式都有讲<br>当我把这些软件都安装好了：以为环境没有问题了<br>直接就开始上传项目：</p><h2 id="前端部署：先将前端项目通过：npm-run-build-打包成dist文件夹"><a href="#前端部署：先将前端项目通过：npm-run-build-打包成dist文件夹" class="headerlink" title="前端部署：先将前端项目通过：npm run build 打包成dist文件夹"></a>前端部署：先将前端项目通过：npm run build 打包成dist文件夹</h2><p><img src="/../images/img1.png" alt="img.png"><br>拖拽式上传，简单易用<br><img src="/../images/img2.png" alt="img.png"></p><h2 id="后端部署：在后端项目里面通过-通过命令或者右侧导航栏进行打包"><a href="#后端部署：在后端项目里面通过-通过命令或者右侧导航栏进行打包" class="headerlink" title="后端部署：在后端项目里面通过 通过命令或者右侧导航栏进行打包"></a>后端部署：在后端项目里面通过 通过命令或者右侧导航栏进行打包</h2><p><img src="/../images/img4.png" alt="img.png"><br>将jar上传到服务器上<br><img src="/../images/img5.png" alt="img.png"><br>这样前后端项目就都启动了<br>我们还通过右侧导航栏设置去查看项目的启动情况<br><img src="/../images/img3.png" alt="img.png"></p><p>前面讲到了我们把所有的软件都装好了，但是里面的有一些软件默认只支持本地环境，我们到了线上了是需要开启远程访问的如（mysql，redis，rabbitmq）<br>不然项目是启动不了的，这就是我踩的全部坑：接下来就介绍怎么去解决<br>忘记一件事：我们上线项目所用到的端口，全部都要在服务器上去开放，比如我用的是腾讯云服务器，我就需要去腾讯控制台上去开放端口</p><h2 id="Mysql"><a href="#Mysql" class="headerlink" title="Mysql"></a>Mysql</h2><p>MySQL是一款开源的关系型数据库管理系统，它的用户界面比较简单，但是它的主要应用程序还是在后台运行的。因此，在实际工作中，我们需要开启MySQL的远程访问功能，以便从其他地方访问和管理MySQL数据库。下面，我们来详细了解一下如何开启MySQL的远程访问。</p><p>一、设置MySQL访问权限</p><p>在MySQL中，要实现远程访问，首先需要在MySQL服务端上开启相应的权限。我们可以登录到MySQL服务端的控制台，执行以下命令：</p><p>mysql&gt;grant all privileges on <em>.</em> to ‘root‘@’%’identified by ‘youpassword’ with grant option;</p><p>在上面的命令中，’root’代表MySQL管理员用户的名称，’%’代表允许任意IP地址访问MySQL服务器。我们还可以设置一个特定的IP地址访问MySQL服务端，如：</p><p>mysql&gt;grant all privileges on <em>.</em> to ‘root‘@’192.168.1.1’identified by ‘youpassword’ with grant option;</p><p>在设置完访问权限之后，我们需要在MySQL命令行中执行flush privileges命令来刷新权限设置。</p><p>二、查看用户表</p><p>通过查看MySQL用户表，我们可以看到’host’为’%’，说明root用户登录MySQL的时候，可以允许任意的IP地址访问MySQL服务端。我们可以使用以下命令来查看MySQL用户表：</p><p>mysql&gt; select user,host from mysql.user;</p><p>如果查看到的’user’和’host’都是’root’和’%’，说明我们已经成功地开启了MySQL的远程访问功能。</p><p>三、更改MySQL配置文件</p><p>在上面的步骤中，我们已经开启了MySQL的远程访问功能，但是，如果使用MySQL管理工具navicat连接MySQL服务端时，还是可能会出现连接失败的情况。这是因为MySQL默认只允许本地访问。为了解决这个问题，我们需要更改MySQL配置文件my.conf。</p><p>使用vi 命令打开my.conf文件：</p><p>vi &#x2F;etc&#x2F;mysql&#x2F;my.conf</p><p>在my.conf文件中，我们需要找到bind-address&#x3D;127.0.0.1这一行，并把它改为bind-address&#x3D;0.0.0.0。然后，我们需要重启MySQL服务端：</p><p>service mysql restart</p><p>这样就可以实现外部IP地址对MySQL服务端的访问了。</p><p>总结</p><p>通过以上步骤，我们可以成功地开启MySQL的远程访问功能。在实际工作中，如果我们需要从其他地方访问和管理MySQL数据库，就需要开启MySQL的远程访问功能并设置相应的权限。这对于我们的工作效率和数据安全都有很大的帮助。</p><h2 id="Redis"><a href="#Redis" class="headerlink" title="Redis"></a>Redis</h2><p>redis最好去设置一下密码：可以通过宝塔快速配置，配置文件也可以在宝塔上去改<br><img src="/../images/img6.png" alt="img.png"><br><img src="/../images/img7.png" alt="img.png"><br>1.修改redis.conf文件<br>Redis的配置文件是redis.conf，可以通过修改配置文件来开启远程访问。具体操作如下：<br>找到redis.conf文件并打开。<br>找到bind选项，并将其注释掉或修改为0.0.0.0，表示接受来自任何IP地址的连接。<br>找到protected-mode选项，并将其修改为no，表示关闭保护模式，允许外部访问。<br>修改完成后，重启Redis服务即可生效。但是需要注意的是，这种方式会暴露Redis服务于外网，存在一定的安全风险，建议在内网环境下使用。<br>2.使用SSH隧道<br>使用SSH隧道可以在本地与远程主机之间建立一条安全的加密通道，实现数据传输加密和远程访问。具体操作如下：<br>在本地电脑上使用SSH命令连接到远程主机：ssh-L6379:localhost:6379user@remote_host。其中，6379是Redis默认端口，可以根据实际情况进行修改。<br>在本地电脑上打开redis-cli，并连接到本地主机：redis-cli-hlocalhost-p6379。<br>在本地主机上操作Redis服务。<br>这种方式需要在远程主机上开启SSH服务，并且需要提供用户名和密码进行连接，安全性较高。</p><h2 id="Rabbitmq"><a href="#Rabbitmq" class="headerlink" title="Rabbitmq"></a>Rabbitmq</h2><p>根据上面Rabbitmq的教程，相信都有管理员的账户了<br>要配置 RabbitMQ 进行远程访问，需要进行以下步骤：</p><ol><li>修改 RabbitMQ 配置文件</li></ol><p>在 RabbitMQ 安装目录下找到 <code>rabbitmq.config</code> 文件，如果不存在则创建一个。在文件中添加以下内容：</p><p>[<br>{rabbit, [<br>{tcp_listeners, [{“0.0.0.0”, 5672}]},<br>{loopback_users, []}<br>]}<br>].<br>这将允许任何 IP 地址的客户端连接到 RabbitMQ 服务器。<br>将这些坑踩完，我的项目就正是上线了<br><img src="/../images/img8.png" alt="img8.png"></p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 项目上线 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 博客 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>第一篇</title>
       <link href="/post/4a17b156.html"/>
       <url>/post/4a17b156.html</url>
@@ -20,9 +45,9 @@
     
     
     <entry>
-      <title>分类</title>
-      <link href="/categories/index.html"/>
-      <url>/categories/index.html</url>
+      <title>关于作者</title>
+      <link href="/about/index.html"/>
+      <url>/about/index.html</url>
       
         <content type="html"><![CDATA[]]></content>
       
@@ -31,9 +56,9 @@
     
     
     <entry>
-      <title>关于作者</title>
-      <link href="/about/index.html"/>
-      <url>/about/index.html</url>
+      <title>分类</title>
+      <link href="/categories/index.html"/>
+      <url>/categories/index.html</url>
       
         <content type="html"><![CDATA[]]></content>
       
@@ -86,22 +111,22 @@
     
     
     <entry>
-      <title>友情链接</title>
-      <link href="/link/index.html"/>
-      <url>/link/index.html</url>
+      <title></title>
+      <link href="/js/universe.js"/>
+      <url>/js/universe.js</url>
       
-        <content type="html"><![CDATA[]]></content>
+        <content type="html"><![CDATA[function dark() {window.requestAnimationFrame=window.requestAnimationFrame||window.mozRequestAnimationFrame||window.webkitRequestAnimationFrame||window.msRequestAnimationFrame;var n,e,i,h,t=.05,s=document.getElementById("universe"),o=!0,a="180,184,240",r="226,225,142",d="226,225,224",c=[];function f(){n=window.innerWidth,e=window.innerHeight,i=.216*n,s.setAttribute("width",n),s.setAttribute("height",e)}function u(){h.clearRect(0,0,n,e);for(var t=c.length,i=0;i<t;i++){var s=c[i];s.move(),s.fadeIn(),s.fadeOut(),s.draw()}}function y(){this.reset=function(){this.giant=m(3),this.comet=!this.giant&&!o&&m(10),this.x=l(0,n-10),this.y=l(0,e),this.r=l(1.1,2.6),this.dx=l(t,6*t)+(this.comet+1-1)*t*l(50,120)+2*t,this.dy=-l(t,6*t)-(this.comet+1-1)*t*l(50,120),this.fadingOut=null,this.fadingIn=!0,this.opacity=0,this.opacityTresh=l(.2,1-.4*(this.comet+1-1)),this.do=l(5e-4,.002)+.001*(this.comet+1-1)},this.fadeIn=function(){this.fadingIn&&(this.fadingIn=!(this.opacity>this.opacityTresh),this.opacity+=this.do)},this.fadeOut=function(){this.fadingOut&&(this.fadingOut=!(this.opacity<0),this.opacity-=this.do/2,(this.x>n||this.y<0)&&(this.fadingOut=!1,this.reset()))},this.draw=function(){if(h.beginPath(),this.giant)h.fillStyle="rgba("+a+","+this.opacity+")",h.arc(this.x,this.y,2,0,2*Math.PI,!1);else if(this.comet){h.fillStyle="rgba("+d+","+this.opacity+")",h.arc(this.x,this.y,1.5,0,2*Math.PI,!1);for(var t=0;t<30;t++)h.fillStyle="rgba("+d+","+(this.opacity-this.opacity/20*t)+")",h.rect(this.x-this.dx/4*t,this.y-this.dy/4*t-2,2,2),h.fill()}else h.fillStyle="rgba("+r+","+this.opacity+")",h.rect(this.x,this.y,this.r,this.r);h.closePath(),h.fill()},this.move=function(){this.x+=this.dx,this.y+=this.dy,!1===this.fadingOut&&this.reset(),(this.x>n-n/4||this.y<0)&&(this.fadingOut=!0)},setTimeout(function(){o=!1},50)}function m(t){return Math.floor(1e3*Math.random())+1<10*t}function l(t,i){return Math.random()*(i-t)+t}f(),window.addEventListener("resize",f,!1),function(){h=s.getContext("2d");for(var t=0;t<i;t++)c[t]=new y,c[t].reset();u()}(),function t(){document.getElementsByTagName('html')[0].getAttribute('data-theme')=='dark'&&u(),window.requestAnimationFrame(t)}()};dark()]]></content>
       
     </entry>
     
     
     
     <entry>
-      <title></title>
-      <link href="/js/universe.js"/>
-      <url>/js/universe.js</url>
+      <title>友情链接</title>
+      <link href="/link/index.html"/>
+      <url>/link/index.html</url>
       
-        <content type="html"><![CDATA[function dark() {window.requestAnimationFrame=window.requestAnimationFrame||window.mozRequestAnimationFrame||window.webkitRequestAnimationFrame||window.msRequestAnimationFrame;var n,e,i,h,t=.05,s=document.getElementById("universe"),o=!0,a="180,184,240",r="226,225,142",d="226,225,224",c=[];function f(){n=window.innerWidth,e=window.innerHeight,i=.216*n,s.setAttribute("width",n),s.setAttribute("height",e)}function u(){h.clearRect(0,0,n,e);for(var t=c.length,i=0;i<t;i++){var s=c[i];s.move(),s.fadeIn(),s.fadeOut(),s.draw()}}function y(){this.reset=function(){this.giant=m(3),this.comet=!this.giant&&!o&&m(10),this.x=l(0,n-10),this.y=l(0,e),this.r=l(1.1,2.6),this.dx=l(t,6*t)+(this.comet+1-1)*t*l(50,120)+2*t,this.dy=-l(t,6*t)-(this.comet+1-1)*t*l(50,120),this.fadingOut=null,this.fadingIn=!0,this.opacity=0,this.opacityTresh=l(.2,1-.4*(this.comet+1-1)),this.do=l(5e-4,.002)+.001*(this.comet+1-1)},this.fadeIn=function(){this.fadingIn&&(this.fadingIn=!(this.opacity>this.opacityTresh),this.opacity+=this.do)},this.fadeOut=function(){this.fadingOut&&(this.fadingOut=!(this.opacity<0),this.opacity-=this.do/2,(this.x>n||this.y<0)&&(this.fadingOut=!1,this.reset()))},this.draw=function(){if(h.beginPath(),this.giant)h.fillStyle="rgba("+a+","+this.opacity+")",h.arc(this.x,this.y,2,0,2*Math.PI,!1);else if(this.comet){h.fillStyle="rgba("+d+","+this.opacity+")",h.arc(this.x,this.y,1.5,0,2*Math.PI,!1);for(var t=0;t<30;t++)h.fillStyle="rgba("+d+","+(this.opacity-this.opacity/20*t)+")",h.rect(this.x-this.dx/4*t,this.y-this.dy/4*t-2,2,2),h.fill()}else h.fillStyle="rgba("+r+","+this.opacity+")",h.rect(this.x,this.y,this.r,this.r);h.closePath(),h.fill()},this.move=function(){this.x+=this.dx,this.y+=this.dy,!1===this.fadingOut&&this.reset(),(this.x>n-n/4||this.y<0)&&(this.fadingOut=!0)},setTimeout(function(){o=!1},50)}function m(t){return Math.floor(1e3*Math.random())+1<10*t}function l(t,i){return Math.random()*(i-t)+t}f(),window.addEventListener("resize",f,!1),function(){h=s.getContext("2d");for(var t=0;t<i;t++)c[t]=new y,c[t].reset();u()}(),function t(){document.getElementsByTagName('html')[0].getAttribute('data-theme')=='dark'&&u(),window.requestAnimationFrame(t)}()};dark()]]></content>
+        <content type="html"><![CDATA[]]></content>
       
     </entry>
     
