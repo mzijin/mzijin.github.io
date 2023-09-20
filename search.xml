@@ -4,6 +4,25 @@
   
     
     <entry>
+      <title>指针的解析</title>
+      <link href="/post/65b8796e.html"/>
+      <url>/post/65b8796e.html</url>
+      
+        <content type="html"><![CDATA[<h2 id="这是本人对应指针的理解（如果有错误请指出）"><a href="#这是本人对应指针的理解（如果有错误请指出）" class="headerlink" title="这是本人对应指针的理解（如果有错误请指出）"></a>这是本人对应指针的理解（如果有错误请指出）</h2><p>对于学习c语言，最令人头疼的就是指针<br>首先这个名字就很让人不解，但是对于抽象问题我们就要试着具体化的解释出来</p><h2 id="指针的理解："><a href="#指针的理解：" class="headerlink" title="指针的理解："></a>指针的理解：</h2><p>假设你在邮局里面放了货物，邮局给你一张条子，这张条子记录着你存放货物的地址，你可以通过这张条子去提取你的货物，这张条子就是指针<br>问题1：邮局为什么不直接给你货物 （效率问题，直接给你货物，相当于你把值当成参数进行传递，那么计算机就需要new一个很大对象，给计算机很大的压力）<br>问题2：假如我拿着这个地址去提货发现货物已经被提走了（内存泄漏）<br>问题3：假如给的这个地址让我不小心丢失了，那么货物就会一直存在哪里，占用内存<br>问题4：假如邮局给错了地址，你拿着这个地址胡乱提<br>问题一例子：<br><img src="/../images/img9.png" alt="img.png"><br>#include &lt;stdio.h&gt;<br>&#x2F;&#x2F; 指针变量作为函数参数<br>void swap(int *,int <em>);<br>int main()<br>{<br>    int x,y;<br>    &#x2F;&#x2F; 支持输入两个参数<br>    scanf(“%d %d”,&amp;x,&amp;y);<br>    printf(“x&#x3D;%d y&#x3D;%d\n”,x,y);<br>    &#x2F;&#x2F; 调用swap函数<br>    swap(&amp;x,&amp;y);<br>    &#x2F;&#x2F; 打印x,y的值<br>    printf(“x&#x3D;%d y&#x3D;%d\n”,x,y);<br>    &#x2F;</em> code *&#x2F;<br>    return 0;<br>}<br>&#x2F;&#x2F; 定义函数<br>void swap(int *pa, int *pb){<br>    &#x2F;&#x2F; 定义中间变量，用于存储交换值<br>    int t;<br>    printf(“*pa&#x3D;%d *pb&#x3D;%d\n”,*pa,*pb);<br>    printf(“pa&#x3D;%d pb&#x3D;%d\n”,pa,pb);<br>    t&#x3D;*pa;<br>    *pa&#x3D;*pb;<br>    *pb&#x3D;t;<br>    printf(“*pa&#x3D;%d *pb&#x3D;%d\n”,*pa,*pb);<br>    printf(“pa&#x3D;%d pb&#x3D;%d\n”,pa,pb);<br>}<br>这个时候传递的就是内存地址，而你拿着地址去去提货而已</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 学习笔记 </category>
+          
+      </categories>
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>插本计划</title>
       <link href="/post/ce972d37.html"/>
       <url>/post/ce972d37.html</url>
@@ -112,7 +131,7 @@
       <link href="/friend/index.html"/>
       <url>/friend/index.html</url>
       
-        <content type="html"><![CDATA[<h1 id="友链交换"><a href="#友链交换" class="headerlink" title="友链交换"></a>友链交换</h1><p>想要交换友链的小伙伴，欢迎在留言板留言，留言格式：</p><ul><li><strong>名称：</strong>mzijin</li><li><strong>地址：</strong><a href="https://mzijin.github.io/">https://mzijin.github.io/</a></li><li><strong>简介：</strong>无处不在</li><li><strong>头像：</strong><a href="https://cdn.jsdelivr.net/gh/mzijin/picgodemo/img/xiaoyi.png">https://cdn.jsdelivr.net/gh/mzijin/picgodemo/img/xiaoyi.png</a></li></ul><p>例如我的博客友链，大家可以加到自己博客里哦：</p><ul><li><strong>名称：</strong>十二</li><li><strong>地址：</strong><a href="https://mzijin.github.io/">https://mzijin.github.io/</a></li><li><strong>简介：</strong>无处不在</li><li><strong>头像：</strong>头像地址</li></ul>]]></content>
+        <content type="html"><![CDATA[<h1 id="友链交换"><a href="#友链交换" class="headerlink" title="友链交换"></a>友链交换</h1><p>想要交换友链的小伙伴，欢迎在留言板留言，留言格式：</p><ul><li><strong>名称：</strong>mzijin</li><li><strong>地址：</strong><a href="https://mzijin.github.io/">https://mzijin.github.io/</a></li><li><strong>简介：</strong>无处不在</li><li><strong>头像：</strong><a href="https://cdn.jsdelivr.net/gh/mzijin/picgodemo/img/xiaoyi.png">https://cdn.jsdelivr.net/gh/mzijin/picgodemo/img/xiaoyi.png</a></li></ul><p>例如我的博客友链，大家可以加到自己博客里哦：</p><ul><li><strong>名称：</strong></li><li><strong>地址：</strong><a href="https://mzijin.github.io/">https://mzijin.github.io/</a></li><li><strong>简介：</strong>无处不在</li><li><strong>头像：</strong>头像地址</li></ul>]]></content>
       
     </entry>
     
